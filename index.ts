@@ -4,6 +4,12 @@ import { cerebrasService } from './services/cerebras';
 import type { AIService, ChatMessage } from './types';
 import { withCvContext } from './cv-context';
 
+const API_KEY = process.env.API_KEY;
+
+if (!API_KEY) {
+  console.warn('Warning: API_KEY is not set in environment. All requests to /chat will be rejected with 401.');
+}
+
 const services: AIService[] = [
   // ollamaService,
   groqService,
@@ -29,7 +35,7 @@ const server = Bun.serve({
     const corsHeaders: Record<string, string> = {
       'Access-Control-Allow-Origin': origin,
       'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-API-Key',
       'Access-Control-Allow-Credentials': 'true',
     };
 
@@ -42,6 +48,22 @@ const server = Bun.serve({
     }
 
     if (req.method === 'POST' && pathname === '/chat') {
+      if (!API_KEY) {
+        return new Response('Unauthorized: missing server API key configuration', {
+          status: 401,
+          headers: corsHeaders,
+        });
+      }
+
+      const clientKey = req.headers.get('x-api-key');
+
+      if (!clientKey || clientKey !== API_KEY) {
+        return new Response('Unauthorized', {
+          status: 401,
+          headers: corsHeaders,
+        });
+      }
+
       const { messages } = await req.json() as { messages: ChatMessage[] };
       const finalMessages = withCvContext(messages);
       const service = getNextService();
