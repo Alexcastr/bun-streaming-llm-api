@@ -1,4 +1,4 @@
-import { handleRequest } from '../index';
+import { handleRequest } from '../server';
 
 export default {
   async fetch(request: Request): Promise<Response> {
