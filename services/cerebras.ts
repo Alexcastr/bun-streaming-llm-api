@@ -3,12 +3,19 @@ import type { AIService, ChatMessage } from '../types';
 
 const cerebras = new Cerebras();
 
+const DEFAULT_CEREBRAS_MODEL = 'zai-glm-4.7';
+
+function getCerebrasModel() {
+  return process.env.CEREBRAS_MODEL ?? DEFAULT_CEREBRAS_MODEL;
+}
+
 export const cerebrasService: AIService = {
   name: 'Cerebras',
   async chat(messages: ChatMessage[]) {
+    const model = getCerebrasModel();
     const stream = await cerebras.chat.completions.create({
       messages: messages as any,
-      model: 'zai-glm-4.6',
+      model,
       stream: true,
       max_completion_tokens: 40960,
       temperature: 0.6,
