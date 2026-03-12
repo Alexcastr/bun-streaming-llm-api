@@ -3,7 +3,7 @@ import type { AIService, ChatMessage } from '../types';
 
 const cerebras = new Cerebras();
 
-const DEFAULT_CEREBRAS_MODEL = 'zai-glm-4.7';
+const DEFAULT_CEREBRAS_MODEL = 'llama3.1-8b';
 
 function getCerebrasModel() {
   return process.env.CEREBRAS_MODEL ?? DEFAULT_CEREBRAS_MODEL;
