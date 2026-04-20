@@ -151,11 +151,29 @@ Over **3 years** of focused experience with **TypeScript** as primary language f
 - **Description:** SaaS platform for sports clubs. Manages players, teams, payments, attendance, schedules, and performance metrics. Supports multiple sports (football, volleyball, basketball, tennis, etc.). Role-based dashboards for directors, coaches, parents, and players.
 - **Status:** Live and active.
 
+### 8. Turnio — Appointment Management Platform for SMBs
+- **Stack:** React Native (Expo), NestJS (backend), Next.js (web), TanStack Query, NativeWind, BullMQ, WAHA (WhatsApp)
+- **URL:** https://turnio.site/
+- **Description:** SaaS platform for small and medium businesses (hair salons, barbershops, clinics, gyms, etc.) to manage appointments, clients, services, and schedules. Features a daily/weekly interactive agenda, WhatsApp reminders via WAHA, public booking link, offline-first mode, and a financial mini-dashboard with daily revenue stats.
+- **Platforms:** Mobile app (React Native / Expo), web app (Next.js), and REST API backend (NestJS + PostgreSQL).
+- **Status:** Live and active at turnio.site. Mobile app pending final Google Play review (SMTP fix for email auth in progress).
+- **Key features:**
+  - Appointment creation in under 3 taps
+  - WhatsApp reminder automation (confirm, 1h before, 24h before)
+  - Public booking link shareable via WhatsApp/Instagram
+  - Offline-first: agenda and clients available without internet
+  - Role-based access (owner / staff)
+  - COP currency formatting, Colombia timezone
+
 ## 🔜 Upcoming Projects
 
-### Turnio (Mobile App — Coming Soon)
-- **Type:** Mobile application for SMBs (small and medium businesses).
-- **Details:** Currently in early planning stage. More details will be shared soon.
+### RelatorIA — AI Meeting Transcription & Minutes Generator (Desktop App)
+- **Stack:** Electrobun (Bun runtime + WebKit UI), React, TailwindCSS v4, Hono (backend), SQLite, Deepgram / AssemblyAI (transcription), Qwen2.5 7B self-hosted via Ollama on Coolify/Dokploy
+- **Type:** Desktop application (Windows / Linux / macOS)
+- **Description:** Desktop app that records meetings, transcribes them with AI, and automatically generates the official signed-ready minutes (actas). Targets Colombian organizations legally required to document meetings: residential buildings (Ley 675), public contractors (Ley 80), corporations, NGOs, and schools. Features an offline fallback with Qwen2.5 3B bundled locally.
+- **Key differentiator:** Self-hosted LLM + Colombian legal context per segment (Ley 675, Ley 80, Código de Comercio, etc.)
+- **Backend:** Hono API server handling transcription orchestration and LLM inference routing.
+- **Status:** In active development — MVP targets 10 beta users in Medellín (residential building administrators).
 `.trim(),
 };
 
