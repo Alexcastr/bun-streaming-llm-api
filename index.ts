@@ -2,6 +2,7 @@ import { handleRequest } from './server';
 
 const server = Bun.serve({
   port: process.env.PORT ?? 3000,
+  idleTimeout: 120,
   fetch: handleRequest,
 });
 
