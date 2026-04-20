@@ -59,6 +59,18 @@ bun run start
 
 El servidor levanta en `http://localhost:3000` (o el `PORT` que definas).
 
+## ⚠️ Aviso importante — Contexto de entrenamiento
+
+Este repositorio incluye un archivo `cv-context.ts` con el **system prompt** que configura la IA para responder preguntas sobre el perfil profesional de **Alex Castro** (autor del proyecto). Está siendo usado activamente como backend de un portafolio personal en producción.
+
+Si quieres usar esta API para tu propio proyecto:
+
+1. **Reemplaza el contenido de `cv-context.ts`** con tu propio contexto o system prompt.
+2. No uses el contexto actual en producción: contiene información personal real de otra persona.
+3. El sistema inyecta `cvSystemMessage` automáticamente en cada request vía `withCvContext()` — ajusta esa lógica si no necesitas un contexto fijo.
+
+---
+
 ## Uso (Postman)
 
 Endpoint:
