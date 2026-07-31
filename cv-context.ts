@@ -105,8 +105,9 @@ Over **3 years** of focused experience with **TypeScript** as primary language f
 | **Languages & Frameworks** | JavaScript, TypeScript, Node.js, NestJS, React, Next.js, React Native (Expo), Express, HTML, CSS |
 | **AI & Automation** | LLMs, AI Integrations, AI-powered Apps, MCP Servers (Model Context Protocol), N8N |
 | **UI & State** | Tailwind CSS, Shadcn, TanStack Query, NativeWind |
-| **CMS & Auth** | Strapi, Keycloak |
-| **Databases** | PostgreSQL, SQL, NoSQL |
+| **CMS & Auth** | Strapi, Keycloak, Better Auth |
+| **Realtime & Monorepos** | Socket.IO, Redis, BullMQ, Turborepo + pnpm workspaces |
+| **Databases** | PostgreSQL, Prisma, SQL, NoSQL |
 | **Cloud & DevOps** | AWS, GCP, Firebase, Docker, Coolify, Vercel, CI/CD |
 | **Other** | MERN Stack, WordPress, SEO/SEM, Git |
 
@@ -164,6 +165,21 @@ Over **3 years** of focused experience with **TypeScript** as primary language f
   - Offline-first: agenda and clients available without internet
   - Role-based access (owner / staff)
   - COP currency formatting, Colombia timezone
+
+### 9. CVL — Circuito Voleibol Llanero (Real-time Tournament Platform)
+- **Stack:** Turborepo + pnpm monorepo, NestJS + Prisma + PostgreSQL, Redis + Socket.IO (realtime), Next.js (App Router, PWA), shadcn/ui + Tailwind v4, Better Auth (RBAC), Zod, Cloudflare R2. Deployed on **Coolify** (Docker on a VPS).
+- **URL:** https://cvlvoley.com
+- **Description:** Real-time platform that manages a stage-based volleyball circuit in Meta, Colombia. It replaced the committee's manual workflow (Excel + Google Forms + Looker + Wix) with a single mobile-first PWA. Built for a real client (the CVL organizing committee) under a SaaS subscription model.
+- **Key architecture:** The **tournament engine is pure** — it lives in an isolated domain package (\`packages/domain\`) with zero framework dependencies (no Nest, no Prisma, no Next): plain data in, plain data out, ~178 unit tests verified against the official regulation.
+- **Key features:**
+  - Live scoreboard over Socket.IO with official set rules (25 / 15 decider, 2-point advantage), best-of-3 or best-of-5 configurable
+  - Full stage flow: registration → two group phases (seeding phase that ranks → qualifying with automatic serpentine re-seeding) → knockout (semifinals / brackets / final + 3rd place), using the committee's official templates for 8–32 teams
+  - Live standings, tiebreakers by quotient, team & club ranking across the circuit, stage closing that feeds circuit ranking points
+  - Public landing (calendar, standings, ranking, rules, sponsors, venue, photos) + club registration — no login required
+  - Role-based access: owner, organizer, referee, scorekeeper, club delegate, IT admin — with per-club/group scoping and an audit log
+  - Per-role onboarding tour and manual, light/dark theme, dynamic Open Graph images for sharing
+- **Privacy:** Minors' PII is never logged nor exposed in public endpoints; photos/ID cards live in private storage with signed URLs.
+- **Status:** **In production.** Source code is private (no public repo).
 
 ## 🔜 Upcoming Projects
 
