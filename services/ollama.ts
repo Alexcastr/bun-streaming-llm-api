@@ -1,4 +1,5 @@
 import type { AIService, ChatMessage } from '../types';
+import { UpstreamError } from './upstream-error';
 
 const DEFAULT_OLLAMA_BASE_URL = 'http://127.0.0.1:11434';
 const DEFAULT_OLLAMA_MODEL = 'gpt-oss:20b';
@@ -30,9 +31,7 @@ export const ollamaService: AIService = {
 
     if (!res.ok) {
       const errorText = await res.text().catch(() => '');
-      throw new Error(
-        `Ollama request failed: ${res.status} ${res.statusText}${errorText ? ` - ${errorText}` : ''}`,
-      );
+      throw new UpstreamError('Ollama', res, errorText);
     }
 
     const body = res.body;

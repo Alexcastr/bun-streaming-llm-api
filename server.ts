@@ -20,10 +20,15 @@ const services: AIService[] = [
 
 let currentServiceIndex = 0;
 
-function getNextService() {
-  const service = services[currentServiceIndex];
+// Reparte la carga arrancando por un proveedor distinto en cada petición, pero
+// devuelve la rotación completa para poder recurrir al siguiente si el primero falla.
+function getServicesInRotation(): AIService[] {
+  if (services.length === 0) return [];
+
+  const start = currentServiceIndex;
   currentServiceIndex = (currentServiceIndex + 1) % services.length;
-  return service;
+
+  return [...services.slice(start), ...services.slice(0, start)];
 }
 
 // Groq puede señalar un rate limit dentro del stream, con las cabeceras ya en 200.
@@ -58,14 +63,9 @@ function getRetryAfter(error: unknown) {
   return (headers as Record<string, string>)['retry-after'];
 }
 
-// El proveedor falló antes de empezar a emitir, así que todavía podemos devolver un status útil.
-function upstreamErrorResponse(
-  serviceName: string,
-  error: unknown,
-  corsHeaders: Record<string, string>,
-): Response {
+// Ningún proveedor pudo abrir el stream, así que todavía podemos devolver un status útil.
+function upstreamErrorResponse(error: unknown, corsHeaders: Record<string, string>): Response {
   const status = getErrorStatus(error);
-  console.error(`${serviceName} request failed (status ${status ?? 'unknown'}):`, error);
 
   if (status === 429) {
     const retryAfter = getRetryAfter(error);
@@ -131,25 +131,43 @@ export async function handleRequest(req: Request): Promise<Response> {
 
     const { messages } = (await req.json()) as { messages: ChatMessage[] };
     const finalMessages = withCvContext(messages);
-    const service = getNextService();
 
-    if (!service) {
+    const rotation = getServicesInRotation();
+
+    if (rotation.length === 0) {
       return new Response('No AI service configured', {
         status: 503,
         headers: corsHeaders,
       });
     }
 
-    console.log(`Using ${service.name} service`);
+    let stream: AsyncIterable<string> | undefined;
+    let serviceName = '';
+    let lastError: unknown;
 
-    let stream: AsyncIterable<string>;
-    try {
-      stream = await startStream(await service.chat(finalMessages));
-    } catch (error) {
-      return upstreamErrorResponse(service.name, error, corsHeaders);
+    // startStream ya consumió el primer chunk, así que aquí se capturan también los
+    // fallos que el proveedor solo revela una vez abierto el stream, como el rate limit.
+    for (const candidate of rotation) {
+      console.log(`Using ${candidate.name} service`);
+
+      try {
+        stream = await startStream(await candidate.chat(finalMessages));
+        serviceName = candidate.name;
+        break;
+      } catch (error) {
+        lastError = error;
+        console.error(
+          `${candidate.name} request failed (status ${getErrorStatus(error) ?? 'unknown'}):`,
+          error,
+        );
+      }
     }
 
-    return new Response(logStreamErrors(stream, service.name), {
+    if (!stream) {
+      return upstreamErrorResponse(lastError, corsHeaders);
+    }
+
+    return new Response(logStreamErrors(stream, serviceName), {
       headers: {
         'Content-Type': 'text/event-stream',
         'Cache-Control': 'no-cache',
