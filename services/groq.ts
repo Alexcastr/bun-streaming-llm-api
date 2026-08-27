@@ -16,7 +16,9 @@ export const groqService: AIService = {
       messages,
       model: getGroqModel(),
       temperature: 0.6,
-      max_completion_tokens: 4096,
+      // Groq reserva prompt + max_completion_tokens contra el límite por minuto,
+      // así que se mantiene ajustado al tamaño de respuesta que pide el system prompt.
+      max_completion_tokens: 512,
       top_p: 1,
       stream: true,
       stop: null
@@ -24,7 +26,10 @@ export const groqService: AIService = {
 
     return (async function* () {
       for await (const chunk of chatCompletion) {
-        yield chunk.choices[0]?.delta?.content || ''
+        const delta = chunk.choices[0]?.delta as { content?: string | null; reasoning?: string | null } | undefined;
+        // Los modelos compound entregan la respuesta en `reasoning` al hacer streaming,
+        // el resto la entrega en `content`.
+        yield delta?.content || delta?.reasoning || ''
       }
     })()
   }
