@@ -1,11 +1,11 @@
 # openai-bun-api
 
-API mínima en Bun que expone un endpoint de chat con respuesta en streaming (SSE). Internamente alterna entre proveedores (Groq y Cerebras) en cada request.
+API mínima en Bun que expone un endpoint de chat con respuesta en streaming (SSE). Internamente alterna entre los proveedores configurados (actualmente Groq) en cada request.
 
 ## Requisitos
 
 - Tener instalado **Bun**
-- Tener al menos **una API key** válida para los proveedores configurados (Groq y/o Cerebras)
+- Tener al menos **una API key** válida para los proveedores configurados (Groq)
 
 ## Instalación
 
@@ -17,6 +17,10 @@ bun install
 
 - `PORT` (opcional): puerto del servidor. Por defecto `3000`.
 
+Groq:
+
+- `GROQ_MODEL` (opcional): modelo a usar. Por defecto `qwen/qwen3.8-27b`.
+
 Ollama (local):
 
 - `OLLAMA_BASE_URL` (opcional): URL de tu Ollama. Por defecto `http://127.0.0.1:11434`.
@@ -26,7 +30,6 @@ Para que los SDKs puedan autenticar, define las variables de entorno que cada pr
 En la práctica, normalmente son:
 
 - Groq: `GROQ_API_KEY`
-- Cerebras: `CEREBRAS_API_KEY`
 
 Si usas otros nombres/formatos, ajusta según la documentación de cada SDK/proveedor.
 
@@ -34,7 +37,6 @@ Ejemplo (Windows PowerShell):
 
 ```powershell
 $env:GROQ_API_KEY="TU_API_KEY"
-$env:CEREBRAS_API_KEY="TU_API_KEY"
 $env:OLLAMA_BASE_URL="http://127.0.0.1:11434"
 # Los modelos deben estar descargados en local para OLLAMA 👇
 $env:OLLAMA_MODEL="gpt-oss:20b"

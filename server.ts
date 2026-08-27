@@ -1,5 +1,4 @@
 import { groqService } from './services/groq';
-import { cerebrasService } from './services/cerebras';
 // import { ollamaService } from './services/ollama'; // This one i got it in local
 import type { AIService, ChatMessage } from './types';
 import { withCvContext } from './cv-context';
@@ -13,7 +12,7 @@ if (!API_KEY) {
 const services: AIService[] = [
   // ollamaService,
   groqService,
-  cerebrasService,
+  // Cerebras (eliminado: pasó a ser de pago)
   // Google Gemini
   // OpenRouter
   // otro servicio incluso local
